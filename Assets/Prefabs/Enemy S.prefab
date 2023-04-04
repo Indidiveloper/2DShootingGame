@@ -136,8 +136,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c5615f69f4e32b4daa757768e99d060, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  enemyName: S
   speed: 3
   health: 3
   sprites:
   - {fileID: 8414478535512612329, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
   - {fileID: 4326287474489854147, guid: 138040323294fd440a3a823e5d70ad01, type: 3}
+  maxShotDelay: 3
+  curShotDelay: 0
+  bulletObjA: {fileID: 2644333924940245812, guid: 61728cdd548ea8c4b931db57c902db9b, type: 3}
+  bulletObjB: {fileID: 2644333924940245812, guid: dcd5fa2899ae2af4593943c7b8ffee1b, type: 3}
+  player: {fileID: 0}
