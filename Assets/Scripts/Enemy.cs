@@ -25,8 +25,23 @@ public class Enemy : MonoBehaviour
 
     private void Awake()
     {
-        spriteRenderer = GetComponent<SpriteRenderer>();
-        
+        spriteRenderer = GetComponent<SpriteRenderer>();        
+    }
+
+    private void OnEnable()
+    {
+        switch(enemyName)
+        {
+            case "L":
+                health = 40;
+                break;
+            case "M":
+                health = 10;
+                break;
+            case "S":
+                health = 3;
+                break;
+        }
     }
 
     private void Update()
@@ -98,7 +113,7 @@ public class Enemy : MonoBehaviour
             else if (ran < 8) // Coin
             {
                 GameObject itemCoin = objectManager.MakeObj("ItemCoin");
-                itemCoin.transform.position = transform.position;
+                itemCoin.transform.position = transform.position;                
             }
             else if (ran < 9) // Power
             {
@@ -112,6 +127,7 @@ public class Enemy : MonoBehaviour
             }
 
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
         }
     }
 
@@ -123,13 +139,16 @@ public class Enemy : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.tag == "BorderBullet")
+        {
             gameObject.SetActive(false);
+            transform.rotation = Quaternion.identity;
+        }           
         else if(collision.gameObject.tag == "PlayerBullet")
         {
             Bullet bullet = collision.gameObject.GetComponent<Bullet>();
             OnHit(bullet.dmg);
 
-            gameObject.SetActive(false);
+            collision.gameObject.SetActive(false);
         }
     }
 }
