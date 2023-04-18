@@ -8,7 +8,7 @@ using System.IO;
 
 public class GameManager : MonoBehaviour
 {
-    public string[] enemyObjs;
+    private string[] enemyObjs;
     public Transform[] spawnPoints;
 
     public float nextSpawnDelay;
