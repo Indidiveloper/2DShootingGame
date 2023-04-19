@@ -653,7 +653,7 @@ MonoBehaviour:
   isBoomTime: 0
   life: 3
   score: 0
-  power: 1
+  power: 3
   maxPower: 6
   boom: 0
   maxBoom: 3

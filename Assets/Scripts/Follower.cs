@@ -46,8 +46,7 @@ public class Follower : MonoBehaviour
 
     void Follow()
     {
-        transform.position = followPos;
-       
+        transform.position = followPos;       
     }
 
     void Fire()

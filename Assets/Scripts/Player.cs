@@ -83,7 +83,7 @@ public class Player : MonoBehaviour
 
         switch(power)
         {
-            case 1: // Power One           
+            case 1:         
                 GameObject bullet = objectManager.MakeObj("BulletPlayerA");
                 bullet.transform.position = transform.position;
 
@@ -229,7 +229,7 @@ public class Player : MonoBehaviour
             }
 
             gameObject.SetActive(false);   
-            Destroy(collision.gameObject);
+            collision.gameObject.SetActive(false);
         }
         else if(collision.gameObject.tag == "Item")
         {
@@ -247,7 +247,6 @@ public class Player : MonoBehaviour
                         power++;
                         AddFollower();
                     }
-                        power++;
                     break;
                 case "Boom":
                     if (boom == maxBoom)
