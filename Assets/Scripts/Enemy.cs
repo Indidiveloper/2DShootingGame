@@ -22,16 +22,28 @@ public class Enemy : MonoBehaviour
     public ObjectManager objectManager;
 
     SpriteRenderer spriteRenderer;
+    Animator anim;
+
+    public int patternIndex;
+    public int curPatternCount;
+    public int[] maxPatternCount;
 
     private void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();        
+
+        if(enemyName == "B")
+            anim = GetComponent<Animator>();
     }
 
     private void OnEnable()
     {
         switch(enemyName)
         {
+            case"B":
+                health = 3000;
+                Invoke("Stop", 2);
+                break;
             case "L":
                 health = 40;
                 break;
@@ -44,8 +56,91 @@ public class Enemy : MonoBehaviour
         }
     }
 
+    void Stop()
+    {
+        if (!gameObject.activeSelf)
+            return;
+
+        Rigidbody2D rigid = GetComponent<Rigidbody2D>();
+        rigid.velocity = Vector2.zero;
+
+        Invoke("Think", 2);
+    }
+
+    void Think()
+    {
+        patternIndex = patternIndex == 3 ? 0 : patternIndex + 1;
+        curPatternCount = 0;
+
+        switch(patternIndex)
+        {
+            case 0:
+                FireFoward();
+                break;
+            case 1:
+                FireShot();
+                break;
+            case 2:
+                FireArc();
+                break;
+            case 3:
+                FireAround();
+                break;
+        }
+    }
+
+    void FireFoward()
+    {
+        Debug.Log("앞으로 4발 발사.");
+
+        curPatternCount++;
+
+        if(curPatternCount < maxPatternCount[patternIndex])
+            Invoke("FireFoward", 2);
+        else
+            Invoke("Think", 3);
+    }
+    
+    void FireShot()
+    {
+        Debug.Log("플레이어 방향으로 샷건.");
+
+        curPatternCount++;
+
+        if (curPatternCount < maxPatternCount[patternIndex])
+            Invoke("FireShot", 3.5f);
+        else
+            Invoke("Think", 3);
+    }
+
+    void FireArc()
+    {
+        Debug.Log("부채모양으로 발사.");
+
+        curPatternCount++;
+
+        if (curPatternCount < maxPatternCount[patternIndex])
+            Invoke("FireArc", 0.15f);
+        else
+            Invoke("Think", 3);
+    }
+
+    void FireAround()
+    {
+        Debug.Log("원 형태로 전체 공격.");
+
+        curPatternCount++;
+
+        if (curPatternCount < maxPatternCount[patternIndex])
+            Invoke("FireAround", 0.7f);
+        else
+            Invoke("Think", 3);
+    }
+
     private void Update()
     {
+        if (enemyName == "B")
+            return;
         Fire();
         Reload();
     }
@@ -96,8 +191,16 @@ public class Enemy : MonoBehaviour
             return;
 
         health -= dmg;
-        spriteRenderer.sprite = sprites[1];
-        Invoke("ReturnSprite", 0.1f);
+
+        if(enemyName == "B")
+        {
+            anim.SetTrigger("OnHit");
+        }
+        else
+        {
+            spriteRenderer.sprite = sprites[1];
+            Invoke("ReturnSprite", 0.1f);
+        }        
 
         if (health <= 0)
         {
@@ -105,7 +208,7 @@ public class Enemy : MonoBehaviour
             playerLogic.score += enemyScore;
 
             // #. Random Ratio Item Drop
-            int ran = Random.Range(0, 10);
+            int ran = enemyName == "B" ? 0 : Random.Range(0, 10);
             if(ran < 5)
             {
                 Debug.Log("Not Item");
@@ -138,7 +241,7 @@ public class Enemy : MonoBehaviour
 
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        if (collision.gameObject.tag == "BorderBullet")
+        if (collision.gameObject.tag == "BorderBullet" && enemyName != "B")
         {
             gameObject.SetActive(false);
             transform.rotation = Quaternion.identity;
