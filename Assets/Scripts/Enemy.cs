@@ -91,8 +91,29 @@ public class Enemy : MonoBehaviour
 
     void FireFoward()
     {
-        Debug.Log("앞으로 4발 발사.");
+        if (health <= 0) return;
 
+        // #. Fire 4 Bullet Foward
+        GameObject bulletR = objectManager.MakeObj("BulletBossA");
+        bulletR.transform.position = transform.position + Vector3.right * 0.3f;
+        GameObject bulletRR = objectManager.MakeObj("BulletBossA");
+        bulletRR.transform.position = transform.position + Vector3.right * 0.45f;
+        GameObject bulletL = objectManager.MakeObj("BulletBossA");
+        bulletL.transform.position = transform.position + Vector3.left * 0.3f;
+        GameObject bulletLL = objectManager.MakeObj("BulletBossA");
+        bulletLL.transform.position = transform.position + Vector3.left * 0.45f;
+
+        Rigidbody2D rigidR = bulletR.GetComponent<Rigidbody2D>();
+        Rigidbody2D rigidRR = bulletRR.GetComponent<Rigidbody2D>();
+        Rigidbody2D rigidL = bulletL.GetComponent<Rigidbody2D>();        
+        Rigidbody2D rigidLL = bulletLL.GetComponent<Rigidbody2D>();
+
+        rigidR.AddForce(Vector2.down * 8, ForceMode2D.Impulse);
+        rigidRR.AddForce(Vector2.down * 8, ForceMode2D.Impulse);        
+        rigidL.AddForce(Vector2.down * 8, ForceMode2D.Impulse);
+        rigidLL.AddForce(Vector2.down * 8, ForceMode2D.Impulse);
+
+        // #. Pattern Counting
         curPatternCount++;
 
         if(curPatternCount < maxPatternCount[patternIndex])
@@ -103,8 +124,22 @@ public class Enemy : MonoBehaviour
     
     void FireShot()
     {
-        Debug.Log("플레이어 방향으로 샷건.");
+        if (health <= 0) return;
 
+        // #. Fire 5 Random Shotgun Bullet to Player
+        for (int index = 0; index < 5; index++)
+        {
+            GameObject bullet = objectManager.MakeObj("BulletEnemyB");
+            bullet.transform.position = transform.position;
+
+            Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+            Vector2 dirVec = player.transform.position - transform.position;
+            Vector2 ranVec = new Vector2(Random.Range(-0.5f, 0.5f), Random.Range(0f, 2f));
+            dirVec += ranVec;
+            rigid.AddForce(dirVec.normalized * 3, ForceMode2D.Impulse);
+        }
+        
+        // #. Pattern Counting
         curPatternCount++;
 
         if (curPatternCount < maxPatternCount[patternIndex])
@@ -115,8 +150,18 @@ public class Enemy : MonoBehaviour
 
     void FireArc()
     {
-        Debug.Log("부채모양으로 발사.");
+        if (health <= 0) return;
 
+        // #. Fire Arc Continue Fire
+        GameObject bullet = objectManager.MakeObj("BulletEnemyA");
+        bullet.transform.position = transform.position;
+        bullet.transform.rotation = Quaternion.identity;
+
+        Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+        Vector2 dirVec = new Vector2(Mathf.Cos(Mathf.PI * 10 * curPatternCount / maxPatternCount[patternIndex]), -1);
+        rigid.AddForce(dirVec.normalized * 5, ForceMode2D.Impulse);
+
+        // #. Pattern Counting
         curPatternCount++;
 
         if (curPatternCount < maxPatternCount[patternIndex])
@@ -127,8 +172,29 @@ public class Enemy : MonoBehaviour
 
     void FireAround()
     {
-        Debug.Log("원 형태로 전체 공격.");
+        if (health <= 0) return;
 
+        // #. Fire Around
+        int roundNumA = 50;
+        int roundNumB = 40;
+        int roundNum = curPatternCount % 2 == 0 ? roundNumA : roundNumB;
+
+        for(int index = 0; index < roundNum; ++index)
+        {
+            GameObject bullet = objectManager.MakeObj("BulletBossB");
+            bullet.transform.position = transform.position;
+            bullet.transform.rotation = Quaternion.identity;
+
+            Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
+            Vector2 dirVec = new Vector2(Mathf.Cos(Mathf.PI * 2 * index / roundNum)
+                                        ,Mathf.Sin(Mathf.PI * 2 * index / roundNum));
+            rigid.AddForce(dirVec.normalized * 2, ForceMode2D.Impulse);
+
+            Vector3 rotVec = Vector3.forward * 360 * index / roundNum + Vector3.forward * 90;
+            bullet.transform.Rotate(rotVec);
+        }
+
+        // #. Pattern Counting
         curPatternCount++;
 
         if (curPatternCount < maxPatternCount[patternIndex])
@@ -153,7 +219,6 @@ public class Enemy : MonoBehaviour
         {
             GameObject bullet = objectManager.MakeObj("BulletEnemyA");
             bullet.transform.position = transform.position;
-
 
             Rigidbody2D rigid = bullet.GetComponent<Rigidbody2D>();
             Vector3 dirVec = player.transform.position - transform.position;
@@ -230,6 +295,7 @@ public class Enemy : MonoBehaviour
             }
 
             gameObject.SetActive(false);
+            CancelInvoke();
             transform.rotation = Quaternion.identity;
         }
     }
