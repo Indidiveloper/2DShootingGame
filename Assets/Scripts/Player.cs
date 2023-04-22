@@ -31,15 +31,49 @@ public class Player : MonoBehaviour
     public ObjectManager objectManager;
 
     public GameObject[] followers;
-
+    public bool isRespawnTime;
 
     Animator anim;
+    SpriteRenderer spriteRenderer;
 
     private void Awake()
     {
         anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
     }
 
+    private void OnEnable()
+    {
+        Unbeatable();
+        Invoke("Unbeatable", 3);
+    }
+
+    void Unbeatable()
+    {
+        isRespawnTime = !isRespawnTime;
+        if (isRespawnTime)
+        {
+            // #. 무적 타임 이펙트 (투명)
+            isRespawnTime = true;
+            spriteRenderer.color = new Color(1, 1, 1, 0.5f);
+
+            for(int index = 0; index < followers.Length; ++index)
+            {
+                followers[index].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 0.5f);
+            }
+        }
+        else
+        {
+            // #. 무적 타임 종료 (원래대로)
+            spriteRenderer.color = new Color(1, 1, 1, 1);
+
+            for (int index = 0; index < followers.Length; ++index)
+            {
+                followers[index].GetComponent<SpriteRenderer>().color = new Color(1, 1, 1, 1);
+            }
+        }
+
+    }
 
     void Update()
     {
@@ -212,6 +246,9 @@ public class Player : MonoBehaviour
         }
         else if(collision.gameObject.tag == "Enemy" || collision.gameObject.tag == "EnemyBullet")
         {
+            if (isRespawnTime)
+                return;
+
             if (isHit)
                 return;
 
