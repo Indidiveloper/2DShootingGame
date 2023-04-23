@@ -2400,6 +2400,7 @@ MonoBehaviour:
   bulletFollowerPrefab: {fileID: 1858723719953268251, guid: c1c66a9c0ae297648adfcbafb7a43a90, type: 3}
   bulletBossAPrefab: {fileID: 2644333924940245812, guid: 3166e0acd85b5164894735ac7a0c173b, type: 3}
   bulletBossBPrefab: {fileID: 2644333924940245812, guid: f4db13e756a7b384e83ed0790eadc906, type: 3}
+  explosionPrefab: {fileID: 6501863174962409738, guid: 6614f0b2a96c2274488b67e6943a0669, type: 3}
 --- !u!4 &1120982383
 Transform:
   m_ObjectHideFlags: 0

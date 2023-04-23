@@ -20,6 +20,7 @@ public class Enemy : MonoBehaviour
     public GameObject itemBoom;
     public GameObject player;
     public ObjectManager objectManager;
+    public GameManager gameManager;
 
     SpriteRenderer spriteRenderer;
     Animator anim;
@@ -295,8 +296,8 @@ public class Enemy : MonoBehaviour
             }
 
             gameObject.SetActive(false);
-            CancelInvoke();
             transform.rotation = Quaternion.identity;
+            gameManager.CallExplosion(transform.position, enemyName);
         }
     }
 
